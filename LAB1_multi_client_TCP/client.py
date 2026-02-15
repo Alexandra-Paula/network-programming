@@ -24,8 +24,12 @@ class Client:
     def receive_message(self):
         while True:
             server_message = self.socket.recv(1024).decode()
+            #Server closes the client socket, the client will recv b'' on its socket
             if not server_message.strip():
-                os._exit(0)
+                print("[client] Succesful disconnect!")
+                self.socket.close()
+                break
+            
             print("\033[1;31;40m" + server_message + "\033[0m")
 
 if __name__ == "__main__":

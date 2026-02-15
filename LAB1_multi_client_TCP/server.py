@@ -23,7 +23,7 @@ class  Server:
 
             self.broadcast_mess(client_name, client_name + " has joined the chat !!!")
 
-            Server.Clients.append(client)
+            self.Clients.append(client)
             Thread(target = self.handle_new_client, args = (client,)).start()
 
     def handle_new_client(self, client):
@@ -31,12 +31,15 @@ class  Server:
         client_socket = client['client_socket']
         while True:
             client_message = client_socket.recv(1024).decode()
+            # Disconnect the client on bye and on empty messages
             if client_message.strip() == client_name + ": bye" or not client_message.strip():
+                print("[server]", client_name, "disconnected")
                 self.broadcast_mess(client_name, client_name + " has left the chat ! :( ")
-                Server.Clients.remove(client)
+                self.Clients.remove(client)
                 client_socket.close()
                 break
             else:
+                print("[server]", client_message)
                 self.broadcast_mess(client_name, client_message)
 
     #loop through the clients and send the message down each socket
