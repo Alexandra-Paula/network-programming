@@ -35,3 +35,6 @@ class Client:
 if __name__ == "__main__":
     Client('127.0.0.1', 7632)
 
+#TODO
+#Print a small local hint like: “Use /dm user msg for private message”
+#Color DMs differently (simple formatting) once they arrive from server with a DM prefix. verde

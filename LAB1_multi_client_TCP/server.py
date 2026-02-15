@@ -9,7 +9,7 @@ class  Server:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((HOST, PORT))
         self.socket.listen(5)
-        print(f"Server started on {HOST}:{PORT}. Server wainting for connection.....")
+        print(f"Server started on {HOST}:{PORT}. Server waiting for connection.....")
 
 
     def listen(self):
@@ -38,6 +38,28 @@ class  Server:
                 self.Clients.remove(client)
                 client_socket.close()
                 break
+            
+            # Private messages
+            elif client_message.strip().split()[1] == "/dm":
+                target = client_message.strip().split()[2]
+                dm_body = client_message.strip().split()[3:]
+                dm_body = ' '.join(dm_body)
+                
+                if not (target or dm_body):
+                    print("[server] Error: DM refused to send")
+                    continue
+                
+                found = False
+                for client_recipient in self.Clients:
+                    if client_recipient['client_name'] == target:
+                        found = True
+                        message_to_send = f"DM {client_name}: {dm_body}" 
+                        client_recipient['client_socket'].send(message_to_send.encode())
+                        # Also can send echo to the sender
+                if not found:
+                    user_not_found_message = f"User '{target}' not found. Try /list" 
+                    client_socket.send(user_not_found_message.encode())
+
             else:
                 print("[server]", client_message)
                 self.broadcast_mess(client_name, client_message)
@@ -51,3 +73,14 @@ class  Server:
 if __name__ == "__main__":
     server = Server('127.0.0.1', 7632)
     server.listen()
+
+#TODO 
+#Add a lock around Clients list, explain why it was added, explain why it will be fine either way
+#Implement /list command
+#TODO DM routing
+#Optionally also send an acknowledgment/echo to the sender, e.g. "(DM to Bob) Alice: hello"
+#TODO Edge cases
+#What happens when?
+# Self-DM
+#Username collisions
+#Socket of recipient disconnected
