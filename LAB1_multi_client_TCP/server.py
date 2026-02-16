@@ -22,6 +22,9 @@ class  Server:
             client = {'client_name': client_name, 'client_socket': client_socket}
 
             self.broadcast_mess(client_name, client_name + " has joined the chat !!!")
+            
+            welkome_message = ("Use /dm username message for private message.")
+            client['client_socket'].send(welkome_message.encode())
 
             self.Clients.append(client)
             Thread(target = self.handle_new_client, args = (client,)).start()

@@ -29,8 +29,10 @@ class Client:
                 print("[client] Succesful disconnect!")
                 self.socket.close()
                 break
-            
-            print("\033[1;31;40m" + server_message + "\033[0m")
+            if server_message.startswith("DM"):
+                print("\033[1;32;40m" + server_message + "\033[0m")
+            else:
+                print("\033[1;31;40m" + server_message + "\033[0m")
 
 if __name__ == "__main__":
     Client('127.0.0.1', 7632)
