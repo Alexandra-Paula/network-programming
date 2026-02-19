@@ -56,12 +56,19 @@ class  Server:
                 for client_recipient in self.Clients:
                     if client_recipient['client_name'] == target:
                         found = True
-                        message_to_send = f"DM {client_name}: {dm_body}" 
+                        #Send the dm to the recipient
+                        message_to_send = f"DM {client_name}: {dm_body}"  
                         client_recipient['client_socket'].send(message_to_send.encode())
-                        # Also can send echo to the sender
+                        #Send the dm to the sender as a confirmation
+                        message_echo = f"DM to {client_recipient['client_name']} | {client_name}: {dm_body}" 
+                        client_socket.send(message_echo.encode())
                 if not found:
                     user_not_found_message = f"User '{target}' not found. Try /list" 
                     client_socket.send(user_not_found_message.encode())
+
+            elif client_message.strip().split()[1] == "/list":
+                names = "\n".join(name["client_name"] for name in self.Clients)
+                client['client_socket'].send(names.encode())
 
             else:
                 print("[server]", client_message)
@@ -79,11 +86,7 @@ if __name__ == "__main__":
 
 #TODO 
 #Add a lock around Clients list, explain why it was added, explain why it will be fine either way
-#Implement /list command
-#TODO DM routing
-#Optionally also send an acknowledgment/echo to the sender, e.g. "(DM to Bob) Alice: hello"
 #TODO Edge cases
 #What happens when?
-# Self-DM
 #Username collisions
 #Socket of recipient disconnected
