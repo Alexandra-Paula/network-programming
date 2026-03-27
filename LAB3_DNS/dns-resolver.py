@@ -1,5 +1,5 @@
 import dns.resolver
-import dns.reversename 
+import dns.reversename
 import ipaddress
 import json
 import sys
@@ -11,7 +11,7 @@ def save_dns(ip):
         json.dump({"dns": ip}, f)
 
 def load_dns():
-    try: 
+    try:
         with open(CONFIG_FILE, 'r') as f:
             return json.load(f)["dns"]
     except FileNotFoundError:
@@ -40,20 +40,20 @@ argument = sys.argv[2]
 if command == "resolve":
     if is_ip(argument):
         #valid id address passed, return domain to user
-        try: 
+        try:
             rev_name = dns.reversename.from_address(argument)
-            result = resolver.resolve(rev_name, 'PTR') 
+            result = resolver.resolve(rev_name, 'PTR')
             for val in result:
                 print('Domain Name: ', val.to_text())
         except dns.resolver.NXDOMAIN:
             print("No domain found for this IP :(")
     else:
-        #an invalid ip address was passed (assume it is a domain), try to return ip address to user 
+        #an invalid ip address was passed (assume it is a domain), try to return ip address to user
         try:
             result = resolver.resolve(argument, 'A')
             for ipval in result:
                 print('IP', ipval.to_text())
-        except dns.resolver.NXDOMAIN: 
+        except dns.resolver.NXDOMAIN:
             print("Invalid domain name or ip address")
         except dns.resolver.LifetimeTimeout:
             print("Invalid DNS Server")
@@ -64,6 +64,3 @@ elif command == "use-dns":
         exit(1)
     save_dns(argument)
     print(f"DNS server changed to {argument}")
-        
-
-
