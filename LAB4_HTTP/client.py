@@ -3,8 +3,6 @@ import json
 
 BASE_URL = "http://localhost:5000/api/category"
 
-# helpers
-
 def print_menu():
     print("\nUTM Shop")
     print("1. List categories")
